@@ -10,9 +10,9 @@ import { AuthService } from "./auth.service";
 import { UserModule } from "../user/user.module";
 
 @Module({
-  providers: [AuthService, PasswordService],
+  providers: [AuthService],
   imports: [forwardRef(() => UserModule)],
-  exports: [PasswordService, AuthService],
+  exports: [AuthService],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

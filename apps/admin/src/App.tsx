@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Admin, DataProvider, Resource } from "react-admin";
+import { Admin, DataProvider } from "react-admin";
 import buildGraphQLProvider from "./data-provider/graphqlDataProvider";
 import { theme } from "./theme/theme";
 import Login from "./Login";
 import "./App.scss";
 import Dashboard from "./pages/Dashboard";
-import { supertokensAuthProvider } from "./auth-provider/ra-auth-supertokens";
-import SuperTokens from "supertokens-web-js";
-import { SuperTokensConfig } from "./config";
+import { createBrowserHistory as createHistory } from "history";
+import { BrowserRouter } from "react-router-dom";
 import { UserList } from "./user/UserList";
 import { UserCreate } from "./user/UserCreate";
 import { UserEdit } from "./user/UserEdit";
 import { UserShow } from "./user/UserShow";
+import { auth0AuthProvider } from "./auth-provider/ra-auth-auth0";
 
-SuperTokens.init(SuperTokensConfig);
+const history = createHistory();
 
 const App = (): React.ReactElement => {
   const [dataProvider, setDataProvider] = useState<DataProvider | null>(null);
   useEffect(() => {
     buildGraphQLProvider
-      .then((provider: any) => {
+      .then((provider: DataProvider) => {
         setDataProvider(() => provider);
       })
-      .catch((error: any) => {
+      .catch((error: unknown) => {
         console.log(error);
       });
   }, []);
@@ -31,22 +31,25 @@ const App = (): React.ReactElement => {
   }
   return (
     <div className="App">
-      <Admin
-        title={"my service"}
-        dataProvider={dataProvider}
-        authProvider={supertokensAuthProvider}
-        theme={theme}
-        dashboard={Dashboard}
-        loginPage={Login}
-      >
-        <Resource
-          name="User"
-          list={UserList}
-          edit={UserEdit}
-          create={UserCreate}
-          show={UserShow}
-        />
-      </Admin>
+      <BrowserRouter>
+        <Admin
+          history={history}
+          title={"my service"}
+          dataProvider={dataProvider}
+          authProvider={auth0AuthProvider}
+          theme={theme}
+          dashboard={Dashboard}
+          loginPage={Login}
+        >
+          <Resource
+            name="User"
+            list={UserList}
+            edit={UserEdit}
+            create={UserCreate}
+            show={UserShow}
+          />
+        </Admin>
+      </BrowserRouter>
     </div>
   );
 };

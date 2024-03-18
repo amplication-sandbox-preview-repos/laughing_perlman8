@@ -14,9 +14,7 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-grpc";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-node";
 import { CacheModule } from "@nestjs/cache-manager";
 import { redisStore } from "cache-manager-ioredis-yet";
-import { generateSupertokensOptions } from "./auth/supertokens/generateSupertokensOptions";
 import { UserModule } from "./user/user.module";
-import { AuthModule } from "./auth/auth.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -28,6 +26,7 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
 import { ACLModule } from "./auth/acl.module";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   controllers: [],
@@ -36,7 +35,6 @@ import { ACLModule } from "./auth/acl.module";
     AuthModule,
     KafkaModule,
     UserModule,
-    AuthModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
@@ -52,14 +50,8 @@ import { ACLModule } from "./auth/acl.module";
         return {
           autoSchemaFile: "schema.graphql",
           sortSchema: true,
+          playground,
           introspection: playground || introspection,
-          playground: false,
-
-          cors: {
-            origin:
-              generateSupertokensOptions(configService).appInfo.websiteDomain,
-            credentials: true,
-          },
         };
       },
       inject: [ConfigService],

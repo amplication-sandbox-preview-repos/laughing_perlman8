@@ -17,7 +17,6 @@ import * as nestAccessControl from "nest-access-control";
 import * as gqlACGuard from "../../auth/gqlAC.guard";
 import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
 import * as common from "@nestjs/common";
-import { AuthService } from "../../auth/auth.service";
 import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { User } from "./User";
@@ -33,8 +32,7 @@ import { UserService } from "../user.service";
 export class UserResolverBase {
   constructor(
     protected readonly service: UserService,
-    protected readonly rolesBuilder: nestAccessControl.RolesBuilder,
-    protected readonly authService: AuthService
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
   ) {}
 
   @graphql.Query(() => MetaQueryPayload)

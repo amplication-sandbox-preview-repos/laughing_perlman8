@@ -1,21 +1,15 @@
-import {
-  forwardRef,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from "@nestjs/common";
-import { STAuthMiddleware } from "./supertokens/auth.middleware";
-import { AuthService } from "./auth.service";
-
+import { Module, forwardRef } from "@nestjs/common";
+import { PassportModule } from "@nestjs/passport";
+import { JwtStrategy } from "./jwt/jwt.strategy";
 import { UserModule } from "../user/user.module";
 
 @Module({
-  providers: [AuthService],
-  imports: [forwardRef(() => UserModule)],
-  exports: [AuthService],
+  imports: [
+    forwardRef(() => UserModule),
+    PassportModule.register({ defaultStrategy: "jwt" }),
+  ],
+  providers: [JwtStrategy],
+  controllers: [],
+  exports: [PassportModule],
 })
-export class AuthModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(STAuthMiddleware).forRoutes("*");
-  }
-}
+export class AuthModule {}
